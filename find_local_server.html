@@ -1,0 +1,47 @@
+<html>
+Searching for server on the local network...
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script>
+<script>
+$(document).ready(function(){
+    var url_head = 'http://192.168.1.';
+    var url_tail = ':8080/identification/';
+    var home_tail = ':8080';
+    var identifier = '12345';
+    address = -1;
+    for (i = 0; i < 256; i++) {
+        url = url_head + String(i) + url_tail;
+        $.ajax({
+            type: 'GET',
+            url: url,
+            ajaxI: i,
+            success: function(data) {
+                i = this.ajaxI;
+                if (String(data).indexOf(identifier) != -1) {
+                    var link = '<a href="' + url_head + i + home_tail + '">Found ' + data + '</a>'
+                    $('.result').html(link);
+                    return 1;
+                }
+            },
+        });
+    }
+});
+</script>
+<div class="result">
+</div>
+</html>
+
+<!--Example function in django views.py file-->
+<!--
+
+def identification(request):
+    if request.method == 'GET':
+        response = HttpResponse('server id#' + '12345')
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+        response['Access-Control-Max-Age'] = 1000
+        response['Access-Control-Allow-Headers'] = '*'
+        return response
+    else:
+        return render_to_response('fail.html')
+
+-->

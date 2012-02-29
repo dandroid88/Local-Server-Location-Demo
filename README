@@ -1,0 +1,10 @@
+Author: Daniel Myers
+
+This project demos how one could autolocate a server on a LAN using jQuery and a python (django) server.
+
+Example Use Case:
+One usage scenario might be to host this page on an external website.  Say someone has a device on thier network but they don't know what its IP is or how to find it, this site/script would solve their problem.  
+
+Warning:
+Realize that with this example server configuration, your LAN topology is partially exposed. Only do this if you understand the risk of this exposure.
+
