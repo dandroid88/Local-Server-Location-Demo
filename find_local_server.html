@@ -7,7 +7,6 @@ $(document).ready(function(){
     var url_tail = ':8080/identification/';
     var home_tail = ':8080';
     var identifier = '12345';
-    address = -1;
     for (i = 0; i < 256; i++) {
         url = url_head + String(i) + url_tail;
         $.ajax({
