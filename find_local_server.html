@@ -1,32 +1,123 @@
 <html>
-Searching for server on the local network...
-<script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script>
-<script>
-$(document).ready(function(){
-    var url_head = 'http://192.168.1.';
-    var url_tail = ':8080/identification/';
-    var home_tail = ':8080';
-    var identifier = '12345';
-    for (i = 0; i < 256; i++) {
-        url = url_head + String(i) + url_tail;
-        $.ajax({
-            type: 'GET',
-            url: url,
-            ajaxI: i,
-            success: function(data) {
-                i = this.ajaxI;
-                if (String(data).indexOf(identifier) != -1) {
-                    var link = '<a href="' + url_head + i + home_tail + '">Found ' + data + '</a>'
-                    $('.result').html(link);
-                    return 1;
-                }
-            },
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script>
+    <script>
+        var MAX_SCAN_TIME_PER_SUB_DOMAIN = 8000;
+        $(document).ready(function() {
+            scan();
         });
-    }
-});
-</script>
-<div class="result">
-</div>
+
+        function checkNotFound() {
+            $('.result').each(function() {
+                if (String($(this).text()).indexOf("Searching") != -1) {
+                    $('#routers').css("visibility", "visible");
+                    $(this).html("Unfortunately we didn't find your server.<br>  Select the brand of your router and we will try again.");
+                }
+            });
+        }
+
+        function scan() {
+            $('.result').html("Searching for server on your local network...");
+            $('#routers').css("visibility", "hidden");
+            var scanTime = 0;
+            $("select option:selected").each(function () {
+                $(".make_IP#" + this.value).each(function () {
+                    scanTime += MAX_SCAN_TIME_PER_SUB_DOMAIN;
+                    var url_head = "http://" + $(this).text();
+                    var url_tail = ':8080/identification/';
+                    var home_tail = ':8080';
+                    var identifier = '12345';
+                    for (i = 0; i < 256; i++) {
+                        url = url_head + String(i) + url_tail;
+                        $.ajax({
+                            type: 'GET',
+                            url: url,
+                            ajaxI: i,
+                            success: function(data) {
+                                i = this.ajaxI;
+                                if (String(data).indexOf(identifier) != -1) {
+                                    var link = '<a href="' + url_head + i + home_tail + '">Found ' + data + '</a>'
+                                    $('.result').html(link);
+                                    $('#routers').css("visibility", "hidden");
+                                    return 1;
+                                }
+                            },
+                        });
+                    }
+                });
+            });
+            setTimeout("checkNotFound()", scanTime);
+        }
+
+    </script>
+    <div class="result">
+        Searching for server on your local network...
+    </div>
+
+<!-- From http://www.techspot.com/guides/287-default-router-ip-addresses/-->
+
+    <div id="routers" style="visibility:hidden;">
+        <select id="selectRouter" onchange="scan();">
+            <option value="Default">Default</option>
+            <option value="3Com">3Com</option>
+            <option value="Apple">Apple</option>
+            <option value="Asus">Asus</option>
+            <option value="Belkin">Belkin</option>
+            <option value="Buffalo">Buffalo</option>
+            <option value="Dell">Dell</option>
+            <option value="D-Link">D-Link</option>
+            <option value="Linksys">Linksys</option>
+            <option value="Microsoft">Microsoft</option>
+            <option value="Motorola">Motorola</option>
+            <option value="MSI">MSI</option>
+            <option value="Netgear">Netgear</option>
+            <option value="Senao">Senao</option>
+            <option value="SpeedTouch">SpeedTouch</option>
+            <option value="Trendnet">Trendnet</option>
+            <option value="U.S. Robotics">U.S. Robotics</option>
+            <option value="Zyxel">Zyxel</option>
+        </select>
+    </div>
+
+    <ul id="makerToIP" style="visibility:hidden;">
+        <li class="make_IP" id="Default">192.168.1.</li>
+        <li class="make_IP" id="3Com">192.168.1.</li>
+        <li class="make_IP" id="Apple">10.0.1.</li>
+        <li class="make_IP" id="Asus">192.168.1.</li>
+        <li class="make_IP" id="Belkin">192.168.2.</li>
+        <li class="make_IP" id="Belkin">10.1.1.</li>
+        <li class="make_IP" id="Buffalo">192.168.11.</li>
+        <li class="make_IP" id="Dell">192.168.1.</li>
+        <li class="make_IP" id="D-Link">192.168.0.</li>
+        <li class="make_IP" id="D-Link">192.168.1.</li>
+        <li class="make_IP" id="D-Link">10.1.1.</li>
+        <li class="make_IP" id="Linksys">192.168.0.</li>
+        <li class="make_IP" id="Linksys">192.168.1.</li>
+        <li class="make_IP" id="Microsoft">192.168.2.</li>
+        <li class="make_IP" id="Motorola">192.168.10.</li>
+        <li class="make_IP" id="Motorola">192.168.20.</li>
+        <li class="make_IP" id="Motorola">192.168.30.</li>
+        <li class="make_IP" id="Motorola">192.168.62.</li>
+        <li class="make_IP" id="Motorola">192.168.100.</li>
+        <li class="make_IP" id="Motorola">192.168.102.</li>
+        <li class="make_IP" id="Motorola">192.168.254.</li>
+        <li class="make_IP" id="MSI">192.168.254.</li>
+        <li class="make_IP" id="Netgear">192.168.0.</li>
+        <li class="make_IP" id="Senao">192.168.0.</li>
+        <li class="make_IP" id="SpeedTouch">10.0.0.</li>
+        <li class="make_IP" id="SpeedTouch">192.168.1.</li>
+        <li class="make_IP" id="Trendnet">192.168.0.</li>
+        <li class="make_IP" id="Trendnet">192.168.1.</li>
+        <li class="make_IP" id="Trendnet">192.168.2.</li>
+        <li class="make_IP" id="Trendnet">192.168.10.</li>
+        <li class="make_IP" id="U.S. Robotics">192.168.1.</li>
+        <li class="make_IP" id="U.S. Robotics">192.168.2.</li>
+        <li class="make_IP" id="U.S. Robotics">192.168.123.</li>
+        <li class="make_IP" id="Zyxel">192.168.1.</li>
+        <li class="make_IP" id="Zyxel">192.168.2.</li>
+        <li class="make_IP" id="Zyxel">192.168.4.</li>
+        <li class="make_IP" id="Zyxel">192.168.10.</li>
+        <li class="make_IP" id="Zyxel">10.0.0.</li>
+    </ul>
 </html>
 
 <!--Example function in django views.py file-->
